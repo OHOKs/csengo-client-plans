@@ -8,11 +8,11 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>Név</th>
-                        <th>Feltöltés ideje</th>
-                        <th>Lejátszás</th>
-                        <th>Engedélyezés</th>
-                        <th>Elutasitás</th>
+                        <th>Kezdet</th>
+                        <th>Vég</th>
+                        <th>Zenék</th>
+                        <th>Szerkesztés</th>
+                        <th>Törlés</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,30 +20,32 @@
                         <td>{{ item.col1 }}</td>
                         <td>{{ item.col2 }}</td>
                         <td>
-                            <button class="play-button" @click="this.playVideo(item)">
-                                <SvgIcon type="mdi" :path="isPlaying == true ? mdiPlay : mdiPause" class="icon" />
+                            <button class="view-button" @click="this.playVideo(item)">
+                                Megtekintés
                             </button>
                         </td>
                         <td>
                             <button class="edit-button">
-                                <SvgIcon type="mdi" :path="mdiCheck" class="icon" />
+                                <SvgIcon type="mdi" :path="mdiPencil" class="icon" />
                             </button>
                         </td>
                         <td>
                             <button class="delete-button">
-                                <SvgIcon type="mdi" :path="mdiClose" class="icon" />
+                                <SvgIcon type="mdi" :path="mdiDelete" class="icon" />
                             </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <button class="create">Létrehozás</button>
     </div>
 </template>
 
 <script>
 import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiCheck, mdiPlay, mdiPause, mdiClose } from "@mdi/js";
+import { mdiPencil, mdiDelete } from "@mdi/js";
 
 export default {
     components: {
@@ -52,10 +54,8 @@ export default {
     data() {
         return {
             isPlaying: false,
-            mdiCheck,
-            mdiPlay,
-            mdiPause,
-            mdiClose,
+            mdiPencil,
+            mdiDelete,
             searchQuery: '',
             items: [
                 { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
@@ -131,7 +131,6 @@ export default {
     box-sizing: border-box;
 }
 
-.play-button,
 .edit-button,
 .delete-button {
     width: 40px;
@@ -141,31 +140,37 @@ export default {
     transition: all 0.2s ease-in-out;
 }
 
-.play-button {
-    background-color: #2A73C5;
+.view-button {
+    font-family: 'Anta';
+    color: white;
+    font-size: 1.3rem;
+    padding: 5px 15px;
+    border-radius: 10px;
+    background-color: #3883d9;
+    transition: all 0.2s ease-in-out;
 }
 
 .edit-button {
-    background-color: #00C700;
+    background-color: #FF00D0;
 }
 
 .delete-button {
     background-color: #B61431;
 }
 
-.play-button:hover,
+.view-button:hover,
 .edit-button:hover,
 .delete-button:hover {
     transform: scale(1.1);
     cursor: pointer;
 }
 
-.play-button:hover {
+.view-button:hover {
     background-color: #1c5b8a;
 }
 
 .edit-button:hover {
-    background-color: #01a901;
+    background-color: #b40193;
 }
 
 .delete-button:hover {
@@ -179,7 +184,7 @@ export default {
     transition: all 0.2s ease-in-out;
 }
 
-.play-button:hover .icon,
+.view-button:hover .icon,
 .edit-button:hover .icon,
 .delete-button:hover .icon {
     transform: scale(1.1);
@@ -211,6 +216,21 @@ export default {
 
 .search-bar:focus {
     outline: none;
+}
+
+.create {
+    font-family: 'Anta';
+    color: white;
+    margin-top: 3%;
+    font-size: 2rem;
+    padding: 10px 30px;
+    border-radius: 10px;
+    background-color: #3883d9;
+}
+
+.create:hover {
+    background-color: #2a64a6;
+    cursor: pointer;
 }
 
 .table-container {
