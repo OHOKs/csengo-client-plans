@@ -1,9 +1,11 @@
 <template>
     <div class="full-screen-container">
+        <!-- THE SEARCH BAR TO SEARCH MUSIC BY NAME -->
         <div class="search-container">
             <input v-model="searchQuery" type="text" placeholder="Keresés" class="search-bar" />
         </div>
 
+        <!-- THE TABLE TO LIST TEH SONGS -->
         <div class="table-container">
             <table class="data-table">
                 <thead>
@@ -41,8 +43,11 @@
 
         <button class="upload" @click="openCreate()">Feltöltés</button>
 
+
+
+        <!-- THE POPUP TO UPLOAD MUSIC -->
         <div v-if="isCreating" class="overlay">
-            <div class="edit-card">
+            <div class="create-card">
                 <h2>Hang létrehozása</h2>
                 <form @submit.prevent="create">
                     <input id="name" v-model="name" type="text" placeholder="Adja meg a nevet" />
@@ -57,6 +62,7 @@
             </div>
         </div>
 
+        <!-- THE POPUP TO RENAME MUSIC -->
         <div v-if="isEditing" class="overlay">
             <div class="edit-card">
                 <h2>Átnevezés</h2>
@@ -81,11 +87,16 @@ export default {
     },
     data() {
         return {
+            // These are responsible for the popup visibility
             isEditing: false,
             isCreating: false,
+
+            // These are responsible for the music data
             name: '',
             soundName: '',
             sound: null,
+
+            // These are responsible for the table
             isPlaying: {},
             mdiPencil,
             mdiDelete,
@@ -178,6 +189,7 @@ export default {
 
 
 <style scoped>
+/* This is only for this project, since theres a random frame around the whole page, for some reason */
 * {
     color: black;
     margin: 0;
@@ -185,6 +197,24 @@ export default {
     box-sizing: border-box;
 }
 
+/* This is the container of the whole component which is changed by the navbar, absolutely needed */
+.full-screen-container {
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
+
+
+
+
+/* This is the overlay for the popups */
 .overlay {
     position: fixed;
     top: 0;
@@ -198,6 +228,14 @@ export default {
     z-index: 1000;
 }
 
+
+
+
+
+
+
+
+/* These are the style for the edit popup */
 .edit-card {
     background-color: white;
     padding: 20px;
@@ -261,6 +299,77 @@ export default {
     background-color: #be2e24;
 }
 
+
+
+
+
+
+
+
+/* These are the styles for the create popup */
+.create-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+.create-card h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.create-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create-card input,
+.create-card button {
+    font-family: 'Anta';
+    background-color: white;
+    width: 250px;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+}
+
+.create-card button {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.create-card input {
+    border-bottom: 4px solid black;
+}
+
+.create-card input:focus {
+    outline: none;
+}
+
+.create-card button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+}
+
+.create-card button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
+
+.create-card button[type="submit"]:hover {
+    background-color: #358b38;
+}
+
+.create-card button[type="button"]:hover {
+    background-color: #be2e24;
+}
+
 .hidden-input {
     display: none;
 }
@@ -283,14 +392,77 @@ export default {
     background-color: #2a64a6;
 }
 
-.file-name {
-    font-size: 1.2rem;
-    margin-bottom: 10px;
-    color: #333;
-    word-wrap: break-word;
-    text-align: center;
+
+
+
+
+
+/* These are the styles for the search bar */
+.search-container {
+    margin-bottom: 20px;
 }
 
+.search-bar {
+    font-family: 'Anta';
+    background-color: white;
+    width: 250px;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+    border-bottom: 4px solid black;
+}
+
+.search-bar:focus {
+    outline: none;
+}
+
+
+
+
+
+
+/* And lastly, these are the table styles */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar {
+    display: none;
+}
+
+.data-table th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    font-weight: bold;
+}
+
+.data-table thead {
+    border-bottom: 4px solid black;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.data-table th {
+    border-bottom: 4px solid black;
+    font-weight: bold;
+}
+
+/* These are the style for the icon buttons in the table */
 .play-button,
 .edit-button,
 .delete-button {
@@ -345,34 +517,13 @@ export default {
     transform: scale(1.1);
 }
 
-.full-screen-container {
-    width: 90%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
 
-.search-container {
-    margin-bottom: 20px;
-}
 
-.search-bar {
-    font-family: 'Anta';
-    background-color: white;
-    width: 250px;
-    padding: 10px;
-    font-size: 1.3rem;
-    text-align: center;
-    border: none;
-    border-bottom: 4px solid black;
-}
 
-.search-bar:focus {
-    outline: none;
-}
 
+
+
+/* This is the button under the table */
 .upload {
     font-family: 'Anta';
     color: white;
@@ -386,44 +537,5 @@ export default {
 .upload:hover {
     background-color: #2a64a6;
     cursor: pointer;
-}
-
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.table-container::-webkit-scrollbar {
-    display: none;
-}
-
-.data-table th {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 1;
-    font-weight: bold;
-}
-
-.data-table thead {
-    border-bottom: 4px solid black;
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-    padding: 12px;
-    text-align: center;
-    font-size: 1.3rem;
-}
-
-.data-table th {
-    border-bottom: 4px solid black;
-    font-weight: bold;
 }
 </style>
