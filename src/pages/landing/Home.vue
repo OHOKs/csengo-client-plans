@@ -1,159 +1,167 @@
 <template>
-  <div class="login-box">
-    <img src="../../assets/bg2.png" alt="Pollák" />
-    <h2>Bejelentkezés</h2>
-    <form @submit.prevent="handleLogin">
-      <div class="user-box">
-        <input v-model="username" type="text" required />
-        <label>Felhasználónév</label>
+  <div class="main-container">
+    <div class="header">
+      <div>
+        <div class="title">
+          <span class="pollak">POLLAK</span>
+          <span class="csengo">CSENGŐ</span>
+        </div>
+        <div class="welcome">ÜDVÖZLÜNK, valaki</div>
       </div>
-      <div class="user-box">
-        <input v-model="password" type="password" required />
-        <label>Jelszó</label>
+      <div class="user-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" width="48px" height="48px">
+          <path d="M12 2C9.79 2 8 3.79 8 6s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 10c-4.41 0-8 2.24-8 5v3h16v-3c0-2.76-3.59-5-8-5z"/>
+        </svg>
       </div>
-      <button type="submit" class="submit">
-        <span></span>
-        <span></span>
-        <span></span>
-        <span></span>
-        Belépés
-      </button>
-    </form>
+    </div>
+    <div class="container">
+      <div class="card-body">
+        <p>Card Body 1</p>
+      </div>
+      <div class="card-body">
+        <p>Card Body 2</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "Login",
-  data() {
-    return {
-      username: "",
-      password: ""
-    };
-  },
-  methods: {
-    handleLogin() {
-      // Bejelentkezési logika itt
-      console.log("Felhasználónév:", this.username);
-      console.log("Jelszó:", this.password);
-    }
-  }
+  name: "CardLayout",
 };
 </script>
 
 <style scoped>
-/* CSS ide másolva az eredetiből */
-html {
-  height: 100%;
+.main-container {
+  position: relative;
+  padding-top: 120px; 
+  padding-left: 15px; 
+  padding-right: 15px; 
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-  background: url('../../assets/asd2.jpg');
-}
-
-img {
-  margin-top: -50%;
-  margin-left: -20%;
-  width: 25%;
-  border: none;
-  border-radius: 50%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-}
-
-.login-box {
+.header {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  padding: 40px;
-  transform: translate(-50%, -50%);
+  top: 10px;
+  left: 10px;
+  right: 30px;
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-start; 
+  font-family: 'Anta';
+  color: white;
+  padding-left: 20px;
+  padding-top: 20px;  
+}
+
+.title {
+  display: flex;
+  gap: 5px;
+}
+
+.pollak {
+  font-size: 2rem; 
+  font-weight: bold;
+}
+
+.csengo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: red; 
+}
+
+.welcome {
+  font-size: 1.2rem; 
+  margin-top: 5px; 
+  text-align: center; 
+  padding-left: 20px; 
+  padding-right: 20px; 
+}
+
+.user-icon {
+  width: 48px; 
+  height: 48px;
+}
+
+.card-body {
+  font-family: 'Anta';
+  position: relative;
+  width: 90%;
+  max-width: 600px; 
+  min-width: 600px;
+  height: 700px;
+  padding: 20px;
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(50px);
   box-sizing: border-box;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.6);
   border-radius: 10px;
-}
-
-.login-box h2 {
-  margin: 0 0 30px;
-  padding: 0;
-  color: #fff;
   text-align: center;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  word-wrap: break-word;
 }
 
-.login-box .user-box {
-  position: relative;
+.card-body p {
+  font-size: 1.2rem; 
+  margin: 0;
 }
 
-.login-box .user-box input {
-  width: 100%;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  margin-bottom: 30px;
-  border: none;
-  border-bottom: 1px solid #fff;
-  outline: none;
-  background: transparent;
+.container {
+  display: flex;
+  justify-content: space-evenly; 
+  align-items: center; 
+  min-height: 80vh;
+  padding: 20px; 
+  gap: 50px; 
 }
 
-.login-box .user-box label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  pointer-events: none;
-  transition: 0.5s;
+@media (max-width: 1300px) {
+  .pollak, .csengo {
+    font-size: 1.5rem; 
+  }
+
+  .welcome {
+    font-size: 1rem;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .card-body {
+    min-width: 100%; 
+    max-width: none;
+  }
+
+  .card-body p {
+    font-size: 1rem; 
+  }
+
+  .user-icon {
+    width: 32px; 
+    height: 32px;
+  }
 }
 
-.login-box .user-box input:focus~label,
-.login-box .user-box input:valid~label {
-  top: -20px;
-  left: 0;
-  color: #fc2658;
-  font-size: 12px;
+@media (max-width: 750px) {
+  .card-body {
+    min-width: 110%; 
+    max-width: none;
+  }
 }
 
-.login-box form .submit {
-  position: relative;
-  display: inline-block;
-  padding: 10px 20px;
-  color: #fc2658;
-  font-size: 16px;
-  text-decoration: none;
-  text-transform: uppercase;
-  overflow: hidden;
-  transition: 0.5s;
-  margin-top: 40px;
-  letter-spacing: 4px;
-}
+@media (max-width: 350px) {
+  .header {
+    right: 20px;
+  }
 
-.login-box .submit:hover {
-  background: #fc2658;
-  color: #fff;
-  border-radius: 5px;
-  box-shadow: 0 0 5px #fc2658, 0 0 25px #fc2658, 0 0 50px #fc2658,
-    0 0 100px #fc2658;
+  .card-body {    
+    min-width: 125%;
+    padding-top: 180px;
+  }
 }
-
-.login-box .submit span {
-  position: absolute;
-  display: block;
-}
-
-.login-box .submit span:nth-child(1) {
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, #fc2658);
-  animation: btn-anim1 1s linear infinite;
-}
-
-/* További stílus animációkkal együtt */
 </style>
