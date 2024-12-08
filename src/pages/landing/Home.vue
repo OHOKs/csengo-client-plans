@@ -156,7 +156,12 @@ export default {
 
 @media (max-width: 350px) {
   .header {
-    right: 20px;
+    right: 30px;
+  }
+
+  .user-icon {
+    width: 25px; 
+    height: 25px;
   }
 
   .card-body {    
