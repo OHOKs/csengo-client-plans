@@ -17,11 +17,11 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in filteredItems" :key="index">
-                        <td>{{ item.col1 }}</td>
-                        <td>{{ item.col2 }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.createdAt }}</td>
                         <td>
-                            <button class="play-button" @click="this.playVideo(item)">
-                                <SvgIcon type="mdi" :path="isPlaying == true ? mdiPlay : mdiPause" class="icon" />
+                            <button class="play-button" @click="playVideo(item)">
+                                <SvgIcon type="mdi" :path="isPlaying[item.id] ? mdiPause : mdiPlay" class="icon" />
                             </button>
                         </td>
                         <td>
@@ -53,60 +53,14 @@ export default {
     },
     data() {
         return {
-            isPlaying: false,
+            isPlaying: {},
             mdiPencil,
             mdiDelete,
             mdiPlay,
             mdiPause,
             mdiMagnify,
             searchQuery: '',
-            items: [
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-            ]
+            items: []
         };
     },
     computed: {
@@ -114,17 +68,49 @@ export default {
             if (this.searchQuery === '') {
                 return this.items;
             } else {
-                return this.items.filter(item => item.col1.toLowerCase().includes(this.searchQuery.toLowerCase()));
+                return this.items.filter(item => item.title.toLowerCase().includes(this.searchQuery.toLowerCase()));
             }
         }
     },
+    async mounted() {
+        this.fetchSongs()
+    },
     methods: {
         playVideo(item) {
-            this.isPlaying = !this.isPlaying
+            this.isPlaying[item.id] = !this.isPlaying[item.id]
+        },
+        fetchSongs() {
+            this.items = [
+                { id: 'awdwad', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'segseg', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Ashdrhdrh1', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Adhrh2024.06.25', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '346', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '2342', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '3746', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '76474d', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'awdwada', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'segsega', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Ashdrhdrh1a', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Adhrh2024.06.25a', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '34a', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '2342a', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '3746a', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '76474da', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'awdwadj', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'segsegj', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Ashdrhdrh1j', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Adhrh2024.06.25j', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '346j', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '2342j', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '3746j', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '76474dj', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+            ]
         }
     }
 };
 </script>
+
 
 <style scoped>
 * {
