@@ -65,11 +65,11 @@ export default {
     },
     computed: {
         filteredItems() {
-            if (this.searchQuery === '') {
-                return this.items;
-            } else {
-                return this.items.filter(item => item.col1.toLowerCase().includes(this.searchQuery.toLowerCase()));
-            }
+            return this.searchQuery
+                ? this.items.filter(item =>
+                    item.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+                )
+                : this.items;
         }
 
     },
@@ -134,6 +134,7 @@ export default {
 
 .search-bar {
     font-family: 'Anta';
+    color: black;
     background-color: white;
     width: 250px;
     padding: 10px;

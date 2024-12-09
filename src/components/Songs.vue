@@ -398,6 +398,7 @@ export default {
 .search-bar {
     font-family: 'Anta';
     background-color: white;
+    color: black;
     width: 250px;
     padding: 10px;
     font-size: 1.3rem;
