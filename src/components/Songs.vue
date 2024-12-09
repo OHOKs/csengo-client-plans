@@ -189,16 +189,9 @@ export default {
 
 
 <style scoped>
-/* This is only for this project, since theres a random frame around the whole page, for some reason */
-* {
-    color: black;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 /* This is the container of the whole component which is changed by the navbar, absolutely needed */
 .full-screen-container {
+    color: black;
     width: 90%;
     height: 90%;
     display: flex;

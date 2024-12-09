@@ -1,9 +1,12 @@
 <template>
     <div class="full-screen-container">
+        <!-- THIS IS THE SEARCH BAR -->
         <div class="search-container">
             <input v-model="searchQuery" type="text" placeholder="Keresés" class="search-bar" />
         </div>
 
+
+        <!-- THIS IS THE TABLE -->
         <div class="table-container">
             <table class="data-table">
                 <thead>
@@ -17,11 +20,11 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in filteredItems" :key="index">
-                        <td>{{ item.col1 }}</td>
-                        <td>{{ item.col2 }}</td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.createdAt }}</td>
                         <td>
                             <button class="play-button" @click="this.playVideo(item)">
-                                <SvgIcon type="mdi" :path="isPlaying == true ? mdiPlay : mdiPause" class="icon" />
+                                <SvgIcon type="mdi" :path="isPlaying[item.id] ? mdiPause : mdiPlay" class="icon" />
                             </button>
                         </td>
                         <td>
@@ -51,59 +54,13 @@ export default {
     },
     data() {
         return {
-            isPlaying: false,
+            isPlaying: {},
             mdiCheck,
             mdiPlay,
             mdiPause,
             mdiClose,
             searchQuery: '',
-            items: [
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-            ]
+            items: []
         };
     },
     computed: {
@@ -114,21 +71,125 @@ export default {
                 return this.items.filter(item => item.col1.toLowerCase().includes(this.searchQuery.toLowerCase()));
             }
         }
+
+    },
+    async mounted() {
+        this.fetchPendingSongs()
     },
     methods: {
         playVideo(item) {
-            this.isPlaying = !this.isPlaying
+            this.isPlaying[item.id] = !this.isPlaying[item.id];
+        },
+        fetchPendingSongs() {
+            this.items = [
+                { id: 'awdwad', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'segseg', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Ashdrhdrh1', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Adhrh2024.06.25', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '346', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '2342', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '3746', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '76474d', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'awdwada', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'segsega', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Ashdrhdrh1a', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Adhrh2024.06.25a', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '34a', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '2342a', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '3746a', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '76474da', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'awdwadj', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'segsegj', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Ashdrhdrh1j', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: 'Adhrh2024.06.25j', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '346j', title: 'Shape of You', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '2342j', title: 'Requiem by who know', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '3746j', title: 'Montagem Coral', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+                { id: '76474dj', title: 'Montagem whatever', createdAt: '2024.06.25', updatedAt: '2024.06.25' },
+            ]
         }
     }
 };
 </script>
 
 <style scoped>
-* {
+/* This is the container of the whole component which is changed by the navbar, absolutely needed */
+.full-screen-container {
     color: black;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    width: 90%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
+/* These are the styles for the search bar */
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    font-family: 'Anta';
+    background-color: white;
+    width: 250px;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+    border-bottom: 4px solid black;
+}
+
+.search-bar:focus {
+    outline: none;
+}
+
+
+
+
+
+
+/* These are the style for the table and its button */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.table-container::-webkit-scrollbar {
+    display: none;
+}
+
+.data-table th {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
+    font-weight: bold;
+}
+
+.data-table thead {
+    border-bottom: 4px solid black;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px;
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.data-table th {
+    border-bottom: 4px solid black;
+    font-weight: bold;
 }
 
 .play-button,
@@ -183,72 +244,5 @@ export default {
 .edit-button:hover .icon,
 .delete-button:hover .icon {
     transform: scale(1.1);
-}
-
-.full-screen-container {
-    width: 90%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.search-container {
-    margin-bottom: 20px;
-}
-
-.search-bar {
-    font-family: 'Anta';
-    background-color: white;
-    width: 250px;
-    padding: 10px;
-    font-size: 1.3rem;
-    text-align: center;
-    border: none;
-    border-bottom: 4px solid black;
-}
-
-.search-bar:focus {
-    outline: none;
-}
-
-.table-container {
-    width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
-}
-
-.table-container::-webkit-scrollbar {
-    display: none;
-}
-
-.data-table th {
-    position: sticky;
-    top: 0;
-    background-color: white;
-    z-index: 1;
-    font-weight: bold;
-}
-
-.data-table thead {
-    border-bottom: 4px solid black;
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-    padding: 12px;
-    text-align: center;
-    font-size: 1.3rem;
-}
-
-.data-table th {
-    border-bottom: 4px solid black;
-    font-weight: bold;
 }
 </style>
