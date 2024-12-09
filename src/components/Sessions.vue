@@ -17,16 +17,16 @@
                 </thead>
                 <tbody>
                     <tr v-for="(item, index) in filteredItems" :key="index">
-                        <td>{{ item.col1 }}</td>
-                        <td>{{ item.col2 }}</td>
+                        <td>{{ item.start }}</td>
+                        <td>{{ item.end }}</td>
                         <td>
-                            <button class="view-button" @click="this.playVideo(item)">
+                            <button class="view-button" @click="this.openView(item)">
                                 Megtekintés
                             </button>
                         </td>
                         <td>
                             <button class="edit-button">
-                                <SvgIcon type="mdi" :path="mdiPencil" class="icon" />
+                                <SvgIcon type="mdi" :path="mdiPencil" @click="this.openEdit(item)" class="icon" />
                             </button>
                         </td>
                         <td>
@@ -39,13 +39,96 @@
             </table>
         </div>
 
-        <button class="create">Létrehozás</button>
+        <button class="create" @click="openCreate()">Létrehozás</button>
+
+        <!-- THE POPUP TO CREATE SESSION -->
+        <div v-if="isCreating" class="overlay">
+            <div class="create-card">
+                <h2>Szavazás létrehozása</h2>
+                <form @submit.prevent="create">
+
+                    <label for="startDate">Kezdő dátum:</label>
+                    <input id="startDate" v-model="startDate" type="date" required />
+
+                    <label for="endDate">Befejező dátum:</label>
+                    <input id="endDate" v-model="endDate" type="date" required />
+
+                    <label for="songDropdown">Válasszon zenéket:</label>
+                    <div class="dropdown">
+                        <button type="button" @click="toggleDropdown" class="dropdown-button">
+                            Zenék kiválasztása
+                        </button>
+                        <ul v-if="dropdownOpen" class="dropdown-menu">
+                            <li v-for="song in songs" :key="song.id">
+                                <input type="checkbox" :id="`song-${song.id}`" v-model="selectedSongsMap[song.id]" />
+                                <label :for="`song-${song.id}`">{{ song.title }}</label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit">Létrehozás</button>
+                    <button type="button" @click="closeCreate">Mégse</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- THE POPUP TO EDIT SESSION -->
+        <div v-if="isEditing" class="overlay">
+            <div class="edit-card">
+                <h2>Szavazás szerkesztése</h2>
+                <form @submit.prevent="editSession">
+                    <label for="startDateEdit">Kezdő dátum:</label>
+                    <input id="startDateEdit" v-model="startDate" type="date" required />
+
+                    <label for="endDateEdit">Befejező dátum:</label>
+                    <input id="endDateEdit" v-model="endDate" type="date" required />
+
+                    <label for="songDropdownEdit">Válasszon zenéket:</label>
+                    <div class="dropdown">
+                        <button type="button" @click="toggleDropdown" class="dropdown-button">
+                            Zenék kiválasztása
+                        </button>
+                        <ul v-if="dropdownOpen" class="dropdown-menu">
+                            <li v-for="song in songs" :key="song.id">
+                                <input type="checkbox" :id="`song-${song.id}`" v-model="selectedSongsMap[song.id]" />
+                                <label :for="`song-${song.id}`">{{ song.title }}</label>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button type="submit">Módosítás</button>
+                    <button type="button" @click="closeEdit">Mégse</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- THE POPUP TO VIEW SONGS -->
+        <div v-if="isViewing" class="overlay">
+            <div class="view-card">
+                <h2>Zenék</h2>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Név</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(item, index) in filteredSongs" :key="index">
+                                <td>{{ item }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="close-button" @click="closeView()">Bezár</button>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiPencil, mdiDelete } from "@mdi/js";
+import { mdiPencil, mdiDelete, mdiPlay, mdiPause } from "@mdi/js";
 
 export default {
     components: {
@@ -53,57 +136,25 @@ export default {
     },
     data() {
         return {
-            isPlaying: false,
+            isCreating: false,
+            isEditing: false,
+            isViewing: false,
+            currentlyViewingId: null,
             mdiPencil,
             mdiDelete,
+            mdiPlay,
+            mdiPause,
             searchQuery: '',
-            items: [
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-                { col1: 'A1', col2: 'B1', col3: 'C1', col4: 'D1', col5: 'E1' },
-                { col1: 'A2', col2: 'B2', col3: 'C2', col4: 'D2', col5: 'E2' },
-                { col1: 'A3', col2: 'B3', col3: 'C3', col4: 'D3', col5: 'E3' },
-                { col1: 'A4', col2: 'B4', col3: 'C4', col4: 'D4', col5: 'E4' },
-                { col1: 'A5', col2: 'B5', col3: 'C5', col4: 'D5', col5: 'E5' },
-            ]
+            isPlaying: {},
+            items: [],
+            filteredSongs: [],
+            songs: [],
+            startDate: '',
+            endDate: '',
+            dropdownOpen: false,
+            selectedSongs: [],
+            selectedSongsMap: {},
+            editingSession: null,  // Add a property to hold the session being edited
         };
     },
     computed: {
@@ -111,17 +162,109 @@ export default {
             if (this.searchQuery === '') {
                 return this.items;
             } else {
-                return this.items.filter(item => item.col1.toLowerCase().includes(this.searchQuery.toLowerCase()));
+                return this.items.filter(item => item.start.toLowerCase().includes(this.searchQuery.toLowerCase()));
             }
-        }
+        },
+    },
+    async mounted() {
+        this.fetchSessions()
+        this.fetchSongs()
     },
     methods: {
-        playVideo(item) {
-            this.isPlaying = !this.isPlaying
+        toggleDropdown() {
+            this.dropdownOpen = !this.dropdownOpen;
+        },
+        create() {
+            if (!this.startDate || !this.endDate || Object.keys(this.selectedSongsMap).length === 0) {
+                alert("Kérjük, töltsön ki minden mezőt!");
+                return;
+            }
+
+            console.log("Kezdő dátum:", this.startDate);
+            console.log("Befejező dátum:", this.endDate);
+            console.log("Kiválasztott zenék:", this.selectedSongsMap);
+
+            this.isCreating = false;
+            this.startDate = '';
+            this.endDate = '';
+            this.selectedSongsMap = {};
+        },
+        closeCreate() {
+            this.isCreating = false;
+            this.startDate = '';
+            this.endDate = '';
+            this.selectedSongsMap = {};
+            this.selectedSongs = [];
+            this.dropdownOpen = false
+        },
+        editSession() {
+            // Save the edited session
+            const editedSession = {
+                ...this.editingSession,  // Keep the existing session's properties
+                start: this.startDate,   // Update with the new data
+                end: this.endDate,
+                songNames: Object.keys(this.selectedSongsMap).filter(songId => this.selectedSongsMap[songId]),
+            };
+
+            console.log("Edited session:", editedSession);
+
+            this.isEditing = false;
+            this.editingSession = null;
+            this.startDate = '';
+            this.endDate = '';
+            this.selectedSongsMap = {};
+        },
+        closeEdit() {
+            this.isEditing = false;
+            this.editingSession = null;
+        },
+        closeView() {
+            this.isViewing = false
+            this.currentlyViewingId = null
+        },
+        openEdit(item) {
+            this.isEditing = true;
+            this.editingSession = { ...item };
+            this.startDate = item.start;
+            this.endDate = item.end;
+            this.selectedSongsMap = {};
+
+        },
+        openCreate() {
+            this.isCreating = true;
+        },
+        openView(item) {
+            let session = this.items.filter(session => session.id == item.id)
+            this.filteredSongs = session[0].songNames;
+            this.isViewing = true
+        },
+        fetchSongs() {
+            this.songs = [
+                { id: 'awdwad', title: 'Shape of You' },
+                { id: 'segseg', title: 'Requiem by who know' },
+                { id: 'Ashdrhdr', title: 'Marhachee' },
+            ];
+        },
+        fetchSessions() {
+            this.items = [
+                {
+                    id: 1,
+                    start: "2024-10-30",
+                    end: "2024-11-05",
+                    songNames: ["Shape of You", "Requiem by who know"]
+                },
+                {
+                    id: 2,
+                    start: "2024-10-15",
+                    end: "2024-11-12",
+                    songNames: ["Marhachee"]
+                }
+            ]
         }
-    }
+    },
 };
 </script>
+
 
 <style scoped>
 * {
@@ -131,6 +274,256 @@ export default {
     box-sizing: border-box;
 }
 
+
+
+
+/* This is the overlay for the popups */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+
+
+
+
+
+
+
+/* These are the style for the edit popup */
+.edit-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+.edit-card h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.edit-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.edit-card input,
+.edit-card button {
+    font-family: 'Anta';
+    background-color: white;
+    width: 250px;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+}
+
+.edit-card button {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.edit-card input {
+    border-bottom: 4px solid black;
+}
+
+.edit-card input:focus {
+    outline: none;
+}
+
+.edit-card button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+}
+
+.edit-card button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
+
+.edit-card button[type="submit"]:hover {
+    background-color: #358b38;
+}
+
+.edit-card button[type="button"]:hover {
+    background-color: #be2e24;
+}
+
+
+
+
+/* These are the style for the view popup */
+.view-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 400px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+.view-card h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.view-card button {
+    font-family: 'Anta';
+    background-color: white;
+    width: 100%;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+}
+
+.view-card button {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+
+.view-card button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
+
+.view-card button[type="button"]:hover {
+    background-color: #be2e24;
+}
+
+
+
+
+
+
+
+/* These are the styles for the create popup */
+.create-card {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 300px;
+}
+
+.create-card h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.create-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.create-card input,
+.create-card button {
+    font-family: 'Anta';
+    background-color: white;
+    width: 250px;
+    padding: 10px;
+    font-size: 1.3rem;
+    text-align: center;
+    border: none;
+}
+
+.create-card button {
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+
+.create-card input {
+    border-bottom: 4px solid black;
+}
+
+.create-card input:focus {
+    outline: none;
+}
+
+.create-card button[type="submit"] {
+    background-color: #4caf50;
+    color: white;
+}
+
+.create-card button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
+
+.create-card button[type="submit"]:hover {
+    background-color: #358b38;
+}
+
+.create-card button[type="button"]:hover {
+    background-color: #be2e24;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    list-style: none;
+    padding: 10px;
+    z-index: 1000;
+}
+
+.dropdown-menu li {
+    width: 230px;
+    display: flex;
+    margin-bottom: 5px;
+}
+
+.dropdown-menu input {
+    width: 30px;
+    margin-right: 20px;
+}
+
+
+
+
+
+
+/* THESE ARE THE TABLE STYLES */
 .edit-button,
 .delete-button {
     width: 40px;

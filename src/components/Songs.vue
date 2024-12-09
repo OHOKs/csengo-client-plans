@@ -109,11 +109,7 @@ export default {
     },
     computed: {
         filteredItems() {
-            return this.searchQuery
-                ? this.items.filter(item =>
-                    item.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-                )
-                : this.items;
+            return this.searchQuery ? this.items.filter(item => item.title.toLowerCase().includes(this.searchQuery.toLowerCase())) : this.items;
         }
     },
     async mounted() {
