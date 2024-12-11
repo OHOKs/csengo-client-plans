@@ -4,7 +4,10 @@
       <canvas class="vote-chart" id="voteChart"></canvas>
     </div>
     <div class="legend">
-      <h1>Színek -- zenék:</h1>
+      <div class="timer">
+        <h1>Frissítés: {{ formattedCountdown }}</h1>
+      </div>
+      <h1>Színek -- zenék</h1>
       <ul class="title-container">
         <li v-for="(song, index) in songs" :key="song.songId">
           <span :style="{ backgroundColor: colors[index] }" class="color-box"></span>
@@ -16,7 +19,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import Chart from 'chart.js/auto';
 
 export default {
@@ -40,7 +43,6 @@ export default {
     };
 
     const colors = ref(songs.value.map(() => getRandomColor()));
-
     let chartInstance = null;
 
     const createChart = () => {
@@ -87,22 +89,54 @@ export default {
       });
     };
 
+    const countdown = ref(300); // 5 perc = 300 másodperc
+
+    const formattedCountdown = computed(() => {
+      const minutes = Math.floor(countdown.value / 60);
+      const seconds = countdown.value % 60;
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    });
+
+    const startCountdown = () => {
+      setInterval(() => {
+        if (countdown.value > 0) {
+          countdown.value--;
+        } else {
+          countdown.value = 300; // újraindítás
+          fetchSongs();
+        }
+      }, 1000);
+    };
+
+    const fetchSongs = () => {
+      console.log('Frissítés történt!');
+      // Ide kerülhet API hívás vagy más adatok frissítése
+      createChart();
+    };
+
     onMounted(() => {
       createChart();
+      startCountdown();
     });
 
     return {
       songs,
       colors,
+      countdown,
+      formattedCountdown,
     };
   },
 };
 </script>
 
 <style>
+.timer {
+  text-align: center;
+}
+
 .chart-container {
-  color: white;
-  background-color: black;
+  color: black;
+  background-color: whitesmoke;
   display: flex;
   gap: 20px;
   padding: 20px;
