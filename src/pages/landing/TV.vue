@@ -6,8 +6,8 @@
     <div class="legend">
       <div class="timer">
         <h1>Frissítés: {{ formattedCountdown }}</h1>
+        <h1 class="connection-title">Színek -- zenék</h1>
       </div>
-      <h1>Színek -- zenék</h1>
       <ul class="title-container">
         <li v-for="(song, index) in songs" :key="song.songId">
           <span :style="{ backgroundColor: colors[index] }" class="color-box"></span>
@@ -19,8 +19,10 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, onUpdated } from 'vue';
 import Chart from 'chart.js/auto';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+Chart.register(ChartDataLabels);
 
 export default {
   setup() {
@@ -29,6 +31,28 @@ export default {
       { songId: "9a380d38-3537-4b4d-8e8e-4dafb9fad375", songTitle: "zene1", voteCount: 110 },
       { songId: "a5962c85-09de-4115-a7d5-7a8811ac25f6", songTitle: "zene2", voteCount: 140 },
       { songId: "b2fbe141-f3f1-46a7-b3af-16d6a0c0baf9", songTitle: "alma", voteCount: 160 },
+      { songId: "d09a3d33-780f-40a1-a591-83e87e31dc5f", songTitle: "title", voteCount: 120 },
+      { songId: "969bf7e2-d5f0-49a5-856c-cab9d92900dc", songTitle: "asdawgagsgfghjavwfdhkagbkfluaa", voteCount: 11 },
+      { songId: "e33d8a9e-506b-4423-be15-4bccbca941fe", songTitle: "Alma20", voteCount: 121 },
+      { songId: "9a380d38-3537-4b4d-8e8e-4dafb9fad375", songTitle: "zene1", voteCount: 110 },
+      { songId: "a5962c85-09de-4115-a7d5-7a8811ac25f6", songTitle: "zene2", voteCount: 140 },
+      { songId: "b2fbe141-f3f1-46a7-b3af-16d6a0c0baf9", songTitle: "alma", voteCount: 160 },
+      { songId: "d09a3d33-780f-40a1-a591-83e87e31dc5f", songTitle: "title", voteCount: 120 },
+      { songId: "969bf7e2-d5f0-49a5-856c-cab9d92900dc", songTitle: "asdawgagsgfghjavwfdhkagbkfluaa", voteCount: 11 },
+      { songId: "e33d8a9e-506b-4423-be15-4bccbca941fe", songTitle: "Alma20", voteCount: 121 },
+      { songId: "9a380d38-3537-4b4d-8e8e-4dafb9fad375", songTitle: "zene1", voteCount: 110 },
+      { songId: "a5962c85-09de-4115-a7d5-7a8811ac25f6", songTitle: "zene2", voteCount: 140 },
+      { songId: "b2fbe141-f3f1-46a7-b3af-16d6a0c0baf9", songTitle: "alma", voteCount: 160 },
+      { songId: "e33d8a9e-506b-4423-be15-4bccbca941fe", songTitle: "Alma20", voteCount: 121 },
+      { songId: "9a380d38-3537-4b4d-8e8e-4dafb9fad375", songTitle: "zene1", voteCount: 110 },
+      { songId: "a5962c85-09de-4115-a7d5-7a8811ac25f6", songTitle: "zene2", voteCount: 140 },
+      { songId: "b2fbe141-f3f1-46a7-b3af-16d6a0c0baf9", songTitle: "alma", voteCount: 160 },
+      { songId: "d09a3d33-780f-40a1-a591-83e87e31dc5f", songTitle: "title", voteCount: 120 },
+      { songId: "e33d8a9e-506b-4423-be15-4bccbca941fe", songTitle: "Alma20", voteCount: 121 },
+      { songId: "9a380d38-3537-4b4d-8e8e-4dafb9fad375", songTitle: "zene1", voteCount: 110 },
+      { songId: "a5962c85-09de-4115-a7d5-7a8811ac25f6", songTitle: "zene2", voteCount: 140 },
+      { songId: "b2fbe141-f3f1-46a7-b3af-16d6a0c0baf9", songTitle: "alma", voteCount: 160 },
+      { songId: "d09a3d33-780f-40a1-a591-83e87e31dc5f", songTitle: "title", voteCount: 120 },
       { songId: "d09a3d33-780f-40a1-a591-83e87e31dc5f", songTitle: "title", voteCount: 120 },
       { songId: "969bf7e2-d5f0-49a5-856c-cab9d92900dc", songTitle: "asdawgagsgfghjavwfdhkagbkfluaa", voteCount: 11 },
     ]);
@@ -43,6 +67,7 @@ export default {
     };
 
     const colors = ref(songs.value.map(() => getRandomColor()));
+
     let chartInstance = null;
 
     const createChart = () => {
@@ -60,6 +85,8 @@ export default {
               label: 'Szavazatok',
               data: songs.value.map(song => song.voteCount),
               backgroundColor: colors.value,
+              borderRadius: { topLeft: 10, topRight: 10 },
+              borderSkipped: false,
             },
           ],
         },
@@ -69,27 +96,53 @@ export default {
             legend: {
               display: false,
             },
+            datalabels: {
+              color: 'black',
+              font: {
+                size: 30,
+              },
+              anchor: 'end',
+              align: 'top',
+              formatter: (value) => value,
+            },
           },
           scales: {
             x: {
+              ticks: {
+                color: 'black',
+                font: {
+                  size: 20,
+                  weight: 'bold',
+                },
+              },
               title: {
                 display: true,
                 text: 'Zenék',
+                font: {
+                  size: 20,
+                  weight: 'bold',
+                },
               },
             },
             y: {
               title: {
                 display: true,
                 text: 'Szavazatok száma',
+                font: {
+                  size: 20,
+                  weight: 'bold',
+                },
               },
               beginAtZero: true,
+              suggestedMax: Math.max(...songs.value.map(song => song.voteCount)) + 1,
             },
           },
         },
+        plugins: [ChartDataLabels],
       });
     };
 
-    const countdown = ref(300); // 5 perc = 300 másodperc
+    const countdown = ref(300);
 
     const formattedCountdown = computed(() => {
       const minutes = Math.floor(countdown.value / 60);
@@ -102,7 +155,7 @@ export default {
         if (countdown.value > 0) {
           countdown.value--;
         } else {
-          countdown.value = 300; // újraindítás
+          countdown.value = 300;
           fetchSongs();
         }
       }, 1000);
@@ -110,13 +163,31 @@ export default {
 
     const fetchSongs = () => {
       console.log('Frissítés történt!');
-      // Ide kerülhet API hívás vagy más adatok frissítése
       createChart();
     };
 
+    const startAutoScroll = () => {
+      const legend = document.querySelector('.legend');
+      let scrollDirection = 1;
+
+      let scrollInterval = setInterval(() => {
+        if (legend) {
+          if (legend.scrollTop + legend.clientHeight >= legend.scrollHeight) {
+            scrollDirection = -1;
+          } else if (legend.scrollTop <= 0) {
+            scrollDirection = 1;
+          }
+
+          legend.scrollTop += scrollDirection;
+        }
+      }, 30);
+    };
+
     onMounted(() => {
+      songs.value.sort((a, b) => b.voteCount - a.voteCount);
       createChart();
       startCountdown();
+      startAutoScroll();
     });
 
     return {
@@ -127,11 +198,41 @@ export default {
     };
   },
 };
+
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Anta&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+* {
+  font-family: 'Anta';
+}
+
 .timer {
   text-align: center;
+  font-size: 2rem;
+}
+
+.timer,
+h1 {
+  position: sticky;
+  top: 0;
+  background-color: whitesmoke;
+  z-index: 2;
+  margin: 0;
+}
+
+.connection-title {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.legend {
+  flex: 1;
+  overflow-y: auto;
+  max-height: calc(100vh - 100px);
+  scrollbar-width: none;
+  scroll-behavior: smooth;
 }
 
 .chart-container {
@@ -146,10 +247,9 @@ export default {
 
 .chart {
   flex: 3;
-}
-
-.legend {
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .color-box {
@@ -161,7 +261,7 @@ export default {
 }
 
 .song-title {
-  font-size: 25px;
+  font-size: 1.5rem;
   font-weight: bold;
 }
 
