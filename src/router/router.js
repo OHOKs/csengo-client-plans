@@ -7,6 +7,7 @@ import Admin from '../pages/landing/Admin.vue'
 import TV from '../pages/landing/TV.vue'
 
 
+
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/login', name: 'Login', component: Login },
