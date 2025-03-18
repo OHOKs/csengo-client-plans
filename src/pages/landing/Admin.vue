@@ -1,32 +1,161 @@
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from "vue";
+import SvgIcon from "@jamescoyle/vue-icon";
+import { mdiAccount, mdiHome } from "@mdi/js";
+
+import PendingSongList from "../../components/PendingSongs.vue";
+import SongList from "../../components/Songs.vue";
+import SessionList from "../../components/Sessions.vue";
+import Download from "../../components/Download.vue";
+import UserList from "../../components/Users.vue";
+
+const isWindowSizeEnoguh = ref(true);
+const currentComponent = ref(SongList);
+const isMobileMenuOpen = ref(false);
+const isMobile = ref(false);
+
+const componentsMap = {
+  SongList,
+  PendingSongList,
+  SessionList,
+  UserList,
+  Download,
+};
+
+const updateIsMobile = () => {
+  isMobile.value = window.innerWidth <= 1156;
+  isWindowSizeEnoguh.value =
+    window.innerWidth >= 300 && window.innerHeight >= 460;
+};
+
+onMounted(() => {
+  isMobile.value = window.innerWidth <= 1156;
+  window.addEventListener("resize", updateIsMobile);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateIsMobile);
+});
+
+const isDropdownVisible = ref(false);
+
+function toggleDropdown() {
+  isDropdownVisible.value = !isDropdownVisible.value;
+}
+</script>
+
 <template>
-  <div class="home-bg" v-if="isWindowSizeEnoguh">
+  <div v-if="isWindowSizeEnoguh" class="home-bg">
     <nav class="navbar">
       <div class="navbar-container">
         <div class="navbar-left">
-          <button class="hamburger-menu" @click="isMobileMenuOpen = !isMobileMenuOpen">&#9776;</button>
-
+          <button
+            class="hamburger-menu"
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
+          >
+            &#9776;
+          </button>
           <RouterLink v-if="!isMobileMenuOpen && !isMobile" to="/">
             <SvgIcon type="mdi" :path="mdiHome" class="navbar-icon" />
           </RouterLink>
         </div>
 
-        <div v-if="!isMobileMenuOpen" class="navbar-center">
-          <button @click="currentComponent = 'Songs'" class="navbar-link">Zenék</button>
-          <button @click="currentComponent = 'PendingSongs'" class="navbar-link">Zene kérelmek</button>
-          <button @click="currentComponent = 'Sessions'" class="navbar-link">Szavazások</button>
+        <div v-if="!isMobileMenuOpen && !isMobile" class="navbar-center">
+          <button
+            class="navbar-link"
+            @click="currentComponent = componentsMap.SongList"
+          >
+            Zenék
+          </button>
+          <button
+            class="navbar-link"
+            @click="currentComponent = componentsMap.PendingSongList"
+          >
+            Zene kérelmek
+          </button>
+          <button
+            class="navbar-link"
+            @click="currentComponent = componentsMap.SessionList"
+          >
+            Szavazások
+          </button>
+          <button
+            class="navbar-link"
+            @click="currentComponent = componentsMap.UserList"
+          >
+            Felhasználók
+          </button>
+          <button
+            class="navbar-link"
+            @click="currentComponent = componentsMap.Download"
+          >
+            Egyebek
+          </button>
         </div>
 
         <div class="navbar-right">
-          <SvgIcon type="mdi" :path="mdiAccount" class="navbar-icon" />
+          <SvgIcon
+            type="mdi"
+            :path="mdiAccount"
+            class="navbar-icon"
+            @click="toggleDropdown"
+          />
+          <!-- Lenyíló menü -->
+          <div v-if="isDropdownVisible" class="dropdown-menu">
+            <button class="dropdown-item" @click="logout">Kijelentkezés</button>
+          </div>
         </div>
       </div>
 
       <div v-if="isMobileMenuOpen" class="mobile-menu">
-        <RouterLink to="/" @click="isMobileMenuOpen = false" class="navbar-link">Home</RouterLink>
-        <button @click="currentComponent = 'Songs'; isMobileMenuOpen = false" class="navbar-link">Zenék</button>
-        <button @click="currentComponent = 'PendingSongs'; isMobileMenuOpen = false" class="navbar-link">Zene
-          kérelmek</button>
-        <button @click="currentComponent = 'Sessions'; isMobileMenuOpen = false" class="navbar-link">Szavazások</button>
+        <RouterLink to="/" class="navbar-link" @click="isMobileMenuOpen = false"
+          >Home</RouterLink
+        >
+        <button
+          class="navbar-link"
+          @click="
+            currentComponent = componentsMap.SongList;
+            isMobileMenuOpen = false;
+          "
+        >
+          Zenék
+        </button>
+        <button
+          class="navbar-link"
+          @click="
+            currentComponent = componentsMap.PendingSongList;
+            isMobileMenuOpen = false;
+          "
+        >
+          Zene kérelmek
+        </button>
+        <button
+          class="navbar-link"
+          @click="
+            currentComponent = componentsMap.SessionList;
+            isMobileMenuOpen = false;
+          "
+        >
+          Szavazások
+        </button>
+        <button
+          class="navbar-link"
+          @click="
+            currentComponent = componentsMap.UserList;
+            isMobileMenuOpen = false;
+          "
+        >
+          Felhasználók
+        </button>
+        <button
+          class="navbar-link"
+          @click="
+            currentComponent = componentsMap.Download;
+            isMobileMenuOpen = false;
+          "
+        >
+          Egyebek
+        </button>
       </div>
     </nav>
 
@@ -39,49 +168,11 @@
   </div>
 </template>
 
-<script>
-import SvgIcon from "@jamescoyle/vue-icon";
-import { mdiHome, mdiAccount } from "@mdi/js";
-
-import Songs from "../../components/Songs.vue";
-import PendingSongs from "../../components/PendingSongs.vue";
-import Sessions from "../../components/Sessions.vue";
-
-export default {
-  components: {
-    Songs,
-    Sessions,
-    PendingSongs,
-    SvgIcon,
-  },
-  data() {
-    return {
-      isWindowSizeEnoguh: true,
-      currentComponent: "Songs",
-      isMobileMenuOpen: false,
-      isMobile: false,
-      mdiHome,
-      mdiAccount,
-    };
-  },
-  async mounted() {
-    this.isMobile = window.innerWidth <= 700;
-    window.addEventListener("resize", this.updateIsMobile);
-  },
-  methods: {
-    updateIsMobile() {
-      this.isMobile = window.innerWidth <= 700;
-      this.isWindowSizeEnoguh = window.innerWidth >= 300 && window.innerHeight >= 300;
-    },
-  },
-};
-</script>
-
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Anta&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Anta&family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 
 .centered-message {
-  font-family: 'Anta';
+  font-family: "Anta";
   position: absolute;
   top: 50%;
   left: 50%;
@@ -91,7 +182,7 @@ export default {
 }
 
 * {
-  font-family: 'Anta';
+  font-family: "Anta";
 }
 
 h1 {
@@ -232,6 +323,33 @@ h2 {
   color: #3883d9;
 }
 
+.dropdown-menu {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown-item {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  text-align: left;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .content-body {
   height: 90vh;
   display: flex;
@@ -240,13 +358,13 @@ h2 {
   align-items: center;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 1156px) {
   .hamburger-menu {
     display: block;
   }
 
   .navbar-center,
-  .navbar-left>.navbar-link {
+  .navbar-left > .navbar-link {
     display: none;
   }
 
